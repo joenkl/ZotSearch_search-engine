@@ -1,0 +1,30 @@
+{
+  "name": "react_search_temp",
+  "version": "1.0.0",
+  "description": "react_search_temp",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client-install": "npm install --prefix client",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josnkl/react_search_temp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josnkl/react_search_temp/issues"
+  },
+  "homepage": "https://github.com/josnkl/react_search_temp#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.1.0",
+    "validator": "^10.2.0"
+  }
+}

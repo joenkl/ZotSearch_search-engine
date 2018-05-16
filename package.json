@@ -1,7 +1,7 @@
 {
-  "name": "react_search_temp",
+  "name": "ics_search_engine",
   "version": "1.0.0",
-  "description": "react_search_temp",
+  "description": "ICS_Search_Engine",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/josnkl/react_search_temp.git"
+    "url": "git+https://github.com/josnkl/ics_search-engine.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/josnkl/react_search_temp/issues"
+    "url": "https://github.com/josnkl/ics_search-engine/issues"
   },
-  "homepage": "https://github.com/josnkl/react_search_temp#readme",
+  "homepage": "https://github.com/josnkl/ics_search-engine#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "concurrently": "^3.5.1",

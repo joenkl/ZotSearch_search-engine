@@ -5,13 +5,14 @@ const Posting = require("./models/Posting");
 router.post("/", (req, res) => {
   const errors = {};
 
-  Posting.findOne({ wordID: req.body.word })
+  Posting.find({ wordID: req.body.word })
     .then(w => {
       if (!w) {
         errors.word = "There is no URL with this word " + req.body.word;
         return res.status(400).json(errors);
       }
-      res.json(url);
+
+      res.json(w);
     })
     .catch(err => res.status(404).json(err));
 });

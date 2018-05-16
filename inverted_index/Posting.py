@@ -42,8 +42,8 @@ class Posting(object):
             if token in self.postDict:
                 self.postDict[token].tagScore += tagScore
 
+    '''
     def insertDataToDatabase(self, docID):
-
         bulk_update = []
         for key, value in self.postDict.items():
             bulk_update.append( UpdateOne( 
@@ -53,7 +53,17 @@ class Posting(object):
                
         if len(bulk_update) > 0:
             postingBulkUpdate(bulk_update)
-    
+    '''
+
+    def insertDataToDatabase(self, docID):
+        bulk_update = []
+        for key, value in self.postDict.items():
+            bulk_update.append( InsertOne( 
+                    postingSchema( value.wordID, docID, value.frequency, value.tagScore, value.position)
+                    ))
+               
+        if len(bulk_update) > 0:
+            postingBulkUpdate(bulk_update)
 
     def updateWordID(self, key, id):
         

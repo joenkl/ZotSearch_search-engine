@@ -9,14 +9,14 @@ class DictionaryModel(object):
 def insertDict(word, frequency):
     return {
                 #"_id" : self.id,
-                "word" : word,
+                "_id" : word,
                 "frequency" : frequency
             }
     
 
 def findWord(word):
     return {
-                "word": word
+                "_id": word
            }
 
 def setFrequency(frequency):

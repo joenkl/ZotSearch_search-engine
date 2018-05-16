@@ -2,9 +2,19 @@ import pymongo
 from pymongo import MongoClient, InsertOne, DeleteMany, ReplaceOne, UpdateOne
 
 
+url = 'mongodb://jnguyen:demonjos@ds014648.mlab.com:14648/icssearch'
+client = MongoClient("ds014648.mlab.com", 14648)
+db = client['icssearch']
+db.authenticate('jnguyen', 'demonjos')
 
-client = MongoClient('127.0.0.1', 27017)
+
+# create index for 
+
+
+'''
+client = MongoClient('localhost', 27017)
 db = client.cs121
+'''
 
 
 def insertData(wordsDict, url):

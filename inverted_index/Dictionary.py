@@ -51,6 +51,7 @@ class Dictionary(object):
             if key in self.wordsDict:
                 posting.updateWordID(key, self.wordsDict[key].id) # update posting id
                 self.wordsDict[key].frequency += value.frequency
+                posting.updateWordID(key, key)
                 bulk_update.append( UpdateOne( findWord(key), setFrequency(value.frequency)))
             else:
                 self.updateDictionary(key, key, value.frequency)

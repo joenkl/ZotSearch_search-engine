@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Comment
 import urllib.request
 import lxml
-
+import time
 from Dictionary import Dictionary
 from File import File
 from Posting import Posting
@@ -41,6 +41,8 @@ size = len(jsonData)
 wDict = Dictionary()
 # loop through the location:url from the bookkeeping.json file
 for location, urlLink in jsonData.items():
+
+    start = time.time()
 
 
     fileName = "/WEBPAGES_RAW/" + location # generate a new location
@@ -89,15 +91,20 @@ for location, urlLink in jsonData.items():
             wordList = Tokenize(word.text.strip()).extractWord() #extra all the text
             wPost.addTagScore(wordList, tagScore) #update the tagscore
 
-    
-    wDict.extractAndUpdatePosting(wPost)
+    end = time.time()
+    print("Parse HTML " , end - start)
 
+
+    start = time.time()   
+    wDict.extractAndUpdatePosting(wPost)
 
     numOfTerm = wDict.getCount()
     wDict.resetCount()
     docID = Location(location, urlLink, numOfTerm, urlTitle).insertToDatabase()
     wPost.insertDataToDatabase(docID)
-    
+    end = time.time()  
+
+    print("Insert to database: ", end - start)
 
 
     i += 1

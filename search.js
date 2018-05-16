@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Url = require("./models/ulr-model");
+const Posting = require("./models/Posting");
 router.post("/", (req, res) => {
   const errors = {};
-  Url.findOne({ docid: req.body.docid })
-    .then(url => {
-      if (!url) {
-        errors.docid = "There is no URL with this docid " + req.body.docid;
+
+  Posting.findOne({ wordID: req.body.word })
+    .then(w => {
+      if (!w) {
+        errors.word = "There is no URL with this word " + req.body.word;
         return res.status(400).json(errors);
       }
       res.json(url);

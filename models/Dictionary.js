@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const DictionarySchema = new Schema(
   {
-    wordID: {
+    _id: {
       type: String
     },
     frequency: {

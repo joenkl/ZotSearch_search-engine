@@ -20,15 +20,22 @@ class Searchbar extends Component {
     const searchObj = {
       docid: this.state.query
     };
+    const startTime = Date.now();
 
     axios
       .post("/search", searchObj)
       .then(res => {
+        var searchResult = [[1, "a", "3.1"], [2, "b", "3.2"], [3, "c", "3.1"]]; //example
         const result = {
           pathname: "/result",
-          state: { data: [res.data.url, res.data.docid] }
+          state: {
+            data: searchResult,
+            size: searchResult.length,
+            startTime: startTime
+          }
         };
         this.props.history.push(result);
+        this.setState({ query: "" });
       })
       .catch(err => {
         this.props.history.push("/notfound");

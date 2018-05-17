@@ -21,11 +21,11 @@ class Searchbar extends Component {
       docid: this.state.query
     };
     const startTime = Date.now();
-
+    console.log(startTime);
     axios
       .post("/search", searchObj)
       .then(res => {
-        var searchResult = [[1, "a", "3.1"], [2, "b", "3.2"], [3, "c", "3.1"]]; //example
+        var searchResult = res.data.locationList; //example
         const result = {
           pathname: "/result",
           state: {

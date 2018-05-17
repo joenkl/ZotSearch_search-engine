@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class SearchResult extends Component {
   render() {
@@ -10,13 +11,16 @@ export default class SearchResult extends Component {
           <div className="container-fluid">
             <p>
               There are {this.props.location.state.size} results found in{" "}
-              {endTime - this.props.location.state.startTime}ms
+              {(endTime - this.props.location.state.startTime) / 1000.0}s
             </p>
             {this.props.location.state.data.map(item => {
               // console.log(item);
               return (
-                <ul key={item.toString()}>
-                  - {item[0]}, {item[1]}, {item[2]}
+                <ul key={item._id.toString()}>
+                  <ul>{item.title}</ul>
+                  <ul>
+                    <Link to={item.url}>{item.url}</Link>
+                  </ul>
                 </ul>
               );
             })}

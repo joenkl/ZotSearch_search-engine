@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const LocationSchema = new Schema(
   {
     _id: {
-      type: String
+      type: Schema.Types.docID,
+      ref: "Posting"
     },
     url: {
       type: String

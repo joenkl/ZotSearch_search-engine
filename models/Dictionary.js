@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const DictionarySchema = new Schema(
   {
     _id: {
-      type: String
+      type: Schema.Types.wordID,
+      ref: "Posting"
     },
     frequency: {
       type: String

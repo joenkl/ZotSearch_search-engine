@@ -5,9 +5,6 @@ const mongoose = require("mongoose");
 const app = express();
 const port = process.env.port || 9000;
 const url = require("./search");
-const dict = require("./api/get-dictionary");
-const posting = require("./api/get-posting");
-const location = require("./api/get-location");
 
 //Using body_parser dependencies to grab search queries
 //from user's browser
@@ -22,9 +19,6 @@ mongoose
   .catch(err => console.log.err(err));
 
 app.use("/search", url);
-app.use("/getdict", dict);
-app.use("/getposting", posting);
-app.use("/getlocation", location);
 
 app.get("/", (req, res) => res.send("This is Home Page"));
 app.listen(port, () => console.log(`Server is running on port ${port}`));

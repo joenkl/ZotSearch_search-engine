@@ -11,7 +11,7 @@ const LocationSchema = new Schema(
       type: String
     },
     numOfTerm: {
-      type: String
+      type: Number
     },
     title: {
       type: String

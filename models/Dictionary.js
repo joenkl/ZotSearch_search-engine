@@ -8,7 +8,7 @@ const DictionarySchema = new Schema(
       ref: "Posting"
     },
     frequency: {
-      type: String
+      type: Number
     }
   },
   { collection: "Dictionary" }

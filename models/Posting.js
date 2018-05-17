@@ -10,13 +10,13 @@ const PostingSchema = new Schema(
       type: String
     },
     frequency: {
-      type: String
+      type: Number
     },
     tagscore: {
-      type: String
+      type: Number
     },
     Position: {
-      type: String
+      type: [Number]
     }
   },
   { collection: "Posting" }

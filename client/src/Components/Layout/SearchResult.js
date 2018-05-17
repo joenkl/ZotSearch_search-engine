@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 export default class SearchResult extends Component {
   render() {
@@ -21,9 +20,9 @@ export default class SearchResult extends Component {
                     <ul>
                       Title: <strong>{item.title}</strong>
                     </ul>
-                    <li>
-                      <Link to={item.url}>{item.url}</Link>
-                    </li>
+                    <ul>
+                      <a href={"http://"+item.url} target="_blank">{item.url}</a>
+                    </ul>
                   </ul>
                 </div>
               );

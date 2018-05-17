@@ -15,13 +15,13 @@ class Dictionary(object):
 
     def __init__(self):
         self.wordsDict = dict()
-        self.count = 0
+        self.uniqueTerm = 0
 
     def words(self):
         return self.wordsDict
 
-    def getCount(self):
-        return self.count
+    def getNumOfUniqueTerm(self):
+        return self.uniqueTerm 
 
     def resetCount(self):
         self.count = 0

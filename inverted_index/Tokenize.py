@@ -19,7 +19,7 @@ class Tokenize(object):
         self.english = enchant.Dict("en_US")
 
 
-    def extractWord(self):
+    def extractToken(self):
         
         
         lemmatizer = WordNetLemmatizer()
@@ -28,10 +28,10 @@ class Tokenize(object):
 
         for token in word_tokenize(textStr): # tokenize
 
-            word = token.translate(self.punctuationTable) #remove punctuation from tonken
+            word = token.translate(self.punctuationTable) #remove punctuation from token
 
             # remove word that are not alphabetic and stop word and check if the word is in range and it is an english word
-            if word.isalpha() and (word not in self.stopWords) and self.inRange(word) and self.english.check(word): 
+            if word.isalpha() and (word not in self.stopWords) and self.inRange(word): # and self.english.check(word): 
                 wordList.append(lemmatizer.lemmatize(word))
 
         return wordList

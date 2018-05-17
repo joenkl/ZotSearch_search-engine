@@ -1,9 +1,10 @@
-def locationSchema(numOfTerm, url, docID, title):    
+def locationSchema(numOfTerm, url, docID, title, totalWordCount):    
     return  {
                 "_id": docID,
                 "url": url,
                 "numOfTerm": numOfTerm,
-                "title": title
+                "title": title,
+                "totalWordCount": totalWordCount
              }
 
 

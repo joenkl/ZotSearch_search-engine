@@ -39,8 +39,8 @@ class Posting(object):
         
         for token in wordsSet:
             # only update the tagScore if it already exist in the system    
-            if token in self.postDict:
-                self.postDict[token].tagScore += tagScore
+            if token in self.postDict and self.postDict[token].tagScore < tagScore:
+                self.postDict[token].tagScore = tagScore
 
     '''
     def insertDataToDatabase(self, docID):

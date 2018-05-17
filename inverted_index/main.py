@@ -3,7 +3,7 @@ import os
 from Tokenize import Tokenize
 from Ranking import tagValue, tagDict
 from bs4 import BeautifulSoup
-from bs4.element import Comment
+from Filter import filterList, tag_visible
 import urllib.request
 import lxml
 import time
@@ -11,16 +11,6 @@ from Dictionary import Dictionary
 from File import File
 from Posting import Posting
 from Location import Location
-
-
-filterList = ['style', 'script', '[document]', 'nav','menu']
-
-def tag_visible(element):
-    if element.parent.name in filterList:
-        return False
-    if isinstance(element, Comment):
-        return False
-    return True
 
 
 currentDir = os.path.dirname(os.path.abspath(
@@ -50,7 +40,7 @@ for location, urlLink in jsonData.items():
 
     # using beautifulSoup to extract html data
     soup = BeautifulSoup(htmlData, 'html.parser')
-    [s.extract() for s in soup(filterList)] # filter some of the information out
+    
    
 
     # create posting
@@ -64,7 +54,7 @@ for location, urlLink in jsonData.items():
     allTexts = soup.getText()
     
 
-    wordList = Tokenize(allTexts).extractWord() #extra all the text
+    wordList = Tokenize(allTexts).extractToken() #extra all the text
     wPost.addWord(wordList) #add the word, word's frequency
     
 
@@ -72,11 +62,14 @@ for location, urlLink in jsonData.items():
     # update the word tagScore
 
     #find all the tag found in the html
+    '''
     tags = set()
     for tag in soup.find_all(True):
         if tag.name not in tags:
             tags.add(tag.name)
-    
+    '''
+    #tagDict is from Ranking.py
+    tags = tagDict.keys()
 
     urlTitle = ''
     # loop through each tag and update the tag score
@@ -88,7 +81,7 @@ for location, urlLink in jsonData.items():
 
         
         for word in soup.find_all(tag):
-            wordList = Tokenize(word.text.strip()).extractWord() #extra all the text
+            wordList = Tokenize(word.text.strip()).extractToken() #extra all the text
             wPost.addTagScore(wordList, tagScore) #update the tagscore
 
     end = time.time()
@@ -98,9 +91,10 @@ for location, urlLink in jsonData.items():
     start = time.time()   
     wDict.extractAndUpdatePosting(wPost)
 
-    numOfTerm = wDict.getCount()
+    numOfTerm = wDict.getNumOfUniqueTerm()
     wDict.resetCount()
-    docID = Location(location, urlLink, numOfTerm, urlTitle).insertToDatabase()
+    totalWordCount = 0
+    docID = Location(location, urlLink, numOfTerm, urlTitle, totalWordCount).insertToDatabase()
     wPost.insertDataToDatabase(docID)
     end = time.time()  
 

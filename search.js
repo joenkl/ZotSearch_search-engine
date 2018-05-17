@@ -9,8 +9,8 @@ router.post("/", (req, res) => {
   var postingList = [];
   var locationList = [];
 
-  Posting.find({ wordID: req.body.word })
-    .limit(20)
+  Posting.find({ wordID: req.body.word.toLowerCase() })
+    .limit(30)
     .then(w => {
       if (!w) {
         errors.word = "There is no URL with this word " + req.body.word;

@@ -16,12 +16,16 @@ export default class SearchResult extends Component {
             {this.props.location.state.data.map(item => {
               // console.log(item);
               return (
-                <ul key={item._id.toString()}>
-                  <ul>{item.title}</ul>
-                  <ul>
-                    <Link to={item.url}>{item.url}</Link>
+                <div className="container-fluid col-sm">
+                  <ul key={item._id.toString()}>
+                    <ul>
+                      Title: <strong>{item.title}</strong>
+                    </ul>
+                    <ul>
+                      <Link to={item.url}>{item.url}</Link>
+                    </ul>
                   </ul>
-                </ul>
+                </div>
               );
             })}
           </div>

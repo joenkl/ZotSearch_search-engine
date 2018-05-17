@@ -21,9 +21,9 @@ export default class SearchResult extends Component {
                     <ul>
                       Title: <strong>{item.title}</strong>
                     </ul>
-                    <ul>
+                    <li>
                       <Link to={item.url}>{item.url}</Link>
-                    </ul>
+                    </li>
                   </ul>
                 </div>
               );

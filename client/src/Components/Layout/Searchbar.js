@@ -18,14 +18,16 @@ class Searchbar extends Component {
   onSubmit(e) {
     e.preventDefault();
     const searchObj = {
-      docid: this.state.query
+      word: this.state.query
     };
     const startTime = Date.now();
-
+    console.log(searchObj);
     axios
       .post("/search", searchObj)
       .then(res => {
-        var searchResult = [[1, "a", "3.1"], [2, "b", "3.2"], [3, "c", "3.1"]]; //example
+        console.log(res);
+        var searchResult = res.data; //example
+        console.log(res.data);
         const result = {
           pathname: "/result",
           state: {

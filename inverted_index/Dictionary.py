@@ -16,12 +16,20 @@ class Dictionary(object):
     def __init__(self):
         self.wordsDict = dict()
         self.uniqueTerm = 0
+        self.totalWordCount = 0
 
     def words(self):
         return self.wordsDict
 
-    def getNumOfUniqueTerm(self):
-        return self.uniqueTerm 
+    def popNumOfUniqueTerm(self):  
+        result = self.uniqueTerm
+        self.uniqueTerm = 0
+        return result
+
+    def popTotalWordCount(self):
+        result = self.totalWordCount
+        self.uniqueTerm = 0
+        return result
 
     def resetCount(self):
         self.count = 0
@@ -73,3 +81,6 @@ class Dictionary(object):
 
         if word in self.wordsDict:
             self.wordsDict[word].id = id
+
+
+    

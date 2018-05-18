@@ -10,3 +10,7 @@
   color: white;
   text-align: center;
 }
+
+.urlLink {
+  word-break: break-all;
+}

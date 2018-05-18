@@ -33,7 +33,8 @@ class Searchbar extends Component {
           state: {
             data: searchResult,
             size: searchResult.length,
-            startTime: startTime
+            startTime: startTime,
+            searchWord: this.state.query
           }
         };
         this.props.history.push(result);

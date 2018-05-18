@@ -26,21 +26,23 @@ export default class SearchResult extends Component {
               // console.log(item);
               return (
                 <ul key={item._id.toString()}>
-                  <ul>
-                    {item.title === "" ? (
-                      <strong>No Title</strong>
-                    ) : (
-                      <strong>{item.title}</strong>
-                    )}
-                  </ul>
-                  <ul>
-                    <a
-                      className="urlLink"
-                      href={"http://" + item.url}
-                      target="_blank"
-                    >
-                      {item.url}
-                    </a>
+                  <ul className="list-group">
+                    <li>
+                      {item.title === "" ? (
+                        <strong>No Title</strong>
+                      ) : (
+                        <strong>{item.title}</strong>
+                      )}
+                    </li>
+                    <li>
+                      <a
+                        className="urlLink"
+                        href={"http://" + item.url}
+                        target="_blank"
+                      >
+                        {item.url}
+                      </a>
+                    </li>
                   </ul>
                 </ul>
               );

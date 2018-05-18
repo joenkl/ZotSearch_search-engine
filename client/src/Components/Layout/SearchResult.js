@@ -3,6 +3,8 @@ import React, { Component } from "react";
 export default class SearchResult extends Component {
   render() {
     var endTime = Date.now();
+    const timeSpentSec =
+      (endTime - this.props.location.state.startTime) / 1000.0;
     return (
       <div className="jumbotron jumbotron-fluid bg-light">
         <div className="container">
@@ -13,13 +15,12 @@ export default class SearchResult extends Component {
             {this.props.location.state.size < 30 ? (
               <p>
                 There are {this.props.location.state.size} results found in{" "}
-                {(endTime - this.props.location.state.startTime) / 1000.0}s
+                {timeSpentSec}s
               </p>
             ) : (
               <p>
                 There are {this.props.location.state.size} <strong>best</strong>{" "}
-                results found in{" "}
-                {(endTime - this.props.location.state.startTime) / 1000.0}s
+                results found in {timeSpentSec}s
               </p>
             )}
             {this.props.location.state.data.map(item => {

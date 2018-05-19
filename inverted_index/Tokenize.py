@@ -4,6 +4,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import string
+from unidecode import unidecode
 import enchant
 
 
@@ -26,16 +27,32 @@ class Tokenize(object):
         wordList = []
         textStr = self.text.strip().lower()
 
-        for token in word_tokenize(textStr): # tokenize
+        for word in word_tokenize(textStr): # tokenize
 
-            word = token.translate(self.punctuationTable) #remove punctuation from token
 
             # remove word that are not alphabetic and stop word and check if the word is in range and it is an english word
-            if word.isalpha() and (word not in self.stopWords) and self.inRange(word): # and self.english.check(word): 
+            if  isAscii(word) and not is_number(word) and (word not in self.stopWords) and inRange(word): # and self.english.check(word): 
                 wordList.append(lemmatizer.lemmatize(word))
 
         return wordList
 
-    def inRange(self, word):
+def inRange(word):
+    word = word.strip()
+    return len(word) > 2 and len(word) < 255
 
-        return len(word) > 2 and len(word) < 255
+
+def is_number(n):
+    try:
+        float(n)   
+    except ValueError:
+        return False
+    return True
+
+def isAscii(myString):
+    try:
+        myString.encode('ascii')
+    except UnicodeEncodeError:
+        return False
+    return True
+
+

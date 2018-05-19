@@ -10,6 +10,7 @@ class Location(object):
         self.url = url
         self.numOfTerm = numOfTerm  
         self.title = title  
+        self.totalWordCount = totalWordCount
 
 
     def setValues(self, docID, url, numOfTerm, title, totalWordCount):

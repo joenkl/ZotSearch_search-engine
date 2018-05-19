@@ -28,6 +28,9 @@ def locationInsertOne(docID,locSchema):
 def postingBulkUpdate(bulkUpdate):
     db.Posting.bulk_write(bulkUpdate)
 
+
+def dictFindTerm(term):
+    return db.Dictionary.find_one({'_id': term})
         
 
 

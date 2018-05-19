@@ -23,17 +23,19 @@ class DataParser(object):
     
     def updatePostingTagScore(self, wPost):
         for tag in tagDict.keys():
+            tag = tag.lower()
             tagScore = getTagValue(tag) # count the equavalient tag score
-        
-            if (tag.lower() == 'title'):
-                self.title = self.soup.find(tag).getText().strip()
 
-        
             for word in self.soup.find_all(tag):
+                
+                if tag == 'title': # store the title information
+                    self.title = word.text.strip()
+
                 wordList = Tokenize(word.text.strip()).extractToken() #extra all the text
                 wPost.addTagScore(wordList, tagScore) #update the tagscore
 
-        
+    def getTitleTagContent(self):
+        return self.title
 
 
 

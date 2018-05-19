@@ -15,7 +15,7 @@ class Posting(object):
         '''
         self.postDict = dict()
         self.counter = 0
-
+        self.uniqueTerm = 0
 
 
 
@@ -32,6 +32,8 @@ class Posting(object):
                 termPosition.append(self.counter)
                 post = PostingModel('','', 1, 0, termPosition)
                 self.postDict[token] = post
+
+        self.uniqueTerm = len(self.postDict)
     
     def addTagScore(self, wordsSet, tagScore):
         

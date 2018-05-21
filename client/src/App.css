@@ -10,3 +10,11 @@
   color: white;
   text-align: center;
 }
+
+.urlLink {
+  word-break: break-all;
+}
+
+ul {
+  list-style-type: none;
+}

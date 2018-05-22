@@ -3,11 +3,35 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Posting = require("./models/Posting");
 const Loc = require("./models/Location");
+const natural = require('natural');
+const tokenizer = new natural.WordTokenizer();
+const stopwords = require('./lib/stopwords')
+const Lemmer = require('lemmer');
+
+
 router.post("/", (req, res) => {
   const errors = {};
   var totalFrequencyOfTheWord;
   var postingList = [];
   var locationList = [];
+
+  const resultArray = tokenizer.tokenize(req.body.word.toLowerCase());
+  var resultDict = {};
+  resultArray.forEach((item, i) => {
+      
+      if( !stopwords.has(item.trim()) && item.length > 2){
+          
+          resultDict[w] = i;
+      }
+  });
+  
+  console.log(resultDict);
+
+
+
+
+
+
 
   Posting.find({ wordID: req.body.word.toLowerCase() })
     .limit(30)

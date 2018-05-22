@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
+
 class Searchbar extends Component {
   constructor() {
     super();
@@ -20,8 +21,10 @@ class Searchbar extends Component {
     const searchObj = {
       word: this.state.query
     };
+
     const startTime = Date.now();
-    console.log(searchObj);
+
+
     axios
       .post("/search", searchObj)
       .then(res => {

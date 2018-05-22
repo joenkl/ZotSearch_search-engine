@@ -1,6 +1,7 @@
 import re
 import nltk
 from nltk.stem import WordNetLemmatizer
+from nltk.stem.porter import *
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import string
@@ -18,12 +19,14 @@ class Tokenize(object):
         self.punctuationTable = str.maketrans('', '', string.punctuation)
         self.stopWords = set(stopwords.words('english'))
         self.english = enchant.Dict("en_US")
+        
 
 
     def extractToken(self):
         
         
         lemmatizer = WordNetLemmatizer()
+        stemmer = PorterStemmer()
         wordList = []
         textStr = self.text.strip().lower()
 
@@ -32,7 +35,7 @@ class Tokenize(object):
 
             # remove word that are not alphabetic and stop word and check if the word is in range and it is an english word
             if  isAscii(word) and not is_number(word) and (word not in self.stopWords) and inRange(word): # and self.english.check(word): 
-                wordList.append(lemmatizer.lemmatize(word))
+                wordList.append(stemmer.stem(word))
 
         return wordList
 

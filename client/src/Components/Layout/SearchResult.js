@@ -36,6 +36,10 @@ export default class SearchResult extends Component {
                       )}
                     </li>
                     <li>
+                      Final Score: {item.finalScore}, Found: {item.matchWords}{" "}
+                      words, TF-IDF: {item.tfidf}, Tag Score {item.tagScore}
+                    </li>
+                    <li>
                       <a
                         className="urlLink"
                         href={"http://" + item.url}

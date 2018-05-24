@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostingSchema = new Schema(
+var PostingSchema = new Schema(
   {
     docID: {
       type: String
@@ -21,5 +21,11 @@ const PostingSchema = new Schema(
   },
   { collection: "Posting" }
 );
+
+PostingSchema.virtual('Location', {
+  ref: "Location",
+  localField: "docID",
+  foreignField: "_id",
+}, {toJSON: {virtual: true}});
 
 module.exports = Posting = mongoose.model("Posting", PostingSchema);

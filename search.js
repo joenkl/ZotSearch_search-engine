@@ -8,6 +8,40 @@ const tokenizer = new natural.WordTokenizer();
 const stopwords = require("./lib/stopwords");
 const stemmer = natural.PorterStemmer;
 
+function getPosting(searchQueries) {
+  return Posting.aggregate([
+    { $match: { wordID: { $in: searchQueries } } },
+    {
+      $group: {
+        _id: "$docID",
+        post: { $push: "$$ROOT" },
+        count: { $sum: 1 },
+        countSumFre: { $sum: "$frequency" }
+      }
+    },
+    {
+      $sort: { count: -1, countSumFre: -1 }
+    },
+    { $limit: 10 },
+    {
+      $lookup: {
+        from: "Location",
+        localField: "post.docID",
+        foreignField: "_id",
+        as: "loc"
+      }
+    },
+    {
+      $lookup: {
+        from: "Dictionary",
+        localField: "post.wordID",
+        foreignField: "_id",
+        as: "dict"
+      }
+    }
+  ]);
+}
+
 router.post("/", (req, res) => {
   const errors = {};
   var totalFrequencyOfTheWord;
@@ -26,99 +60,22 @@ router.post("/", (req, res) => {
     }
   });
 
-  // var searchQueries = ["computer", "science"];
-  // let rawSearchResults = posting
-  //   .aggregate(
-  //     [
-  //       { $match: { wordID: { $in: searchQueries } } },
-  //       {
-  //         $group: {
-  //           _id: "$docID",
-  //           post: { $push: "$$ROOT" },
-  //           count: { $sum: 1 },
-  //           countSumFre: { $sum: "$frequency" }
-  //         }
-  //       },
-  //       { $limit: 1000 },
-  //       {
-  //         $lookup: {
-  //           from: "Location",
-  //           localField: "post.docID",
-  //           foreignField: "_id",
-  //           as: "loc"
-  //         }
-  //       },
-  //       {
-  //         $lookup: {
-  //           from: "Dictionary",
-  //           localField: "post.wordID",
-  //           foreignField: "_id",
-  //           as: "dict"
-  //         }
-  //       }
-  //     ],
-  //     { allowDiskUse: true }
-  //   )
-  //   .then(result => {
-  //     if (!result) {
-  //       errors.word = "There is no URL with this word " + req.body.word;
-  //       return res.status(400).json(errors);
-  //     }
-  //     return result;
-  //   })
-  //   .catch(err => res.status(404).json(err));
+  var searchQueries = ["computer", "science"];
+  console.log(searchQueries);
 
-  Posting.find({ wordID: req.body.word.toLowerCase() })
-    .limit(30)
-    .populate("Location")
-    .then(w => {
-      if (!w) {
-        errors.word = "There is no URL with this word " + req.body.word;
-        return res.status(400).json(errors);
-      }
-
-      postingList = w;
-
-      for (let item in w) {
-        if (item.post.length > 1) {
-          // w map to dictionary<Term, Position>
-          for()
-          
-          let word1 = []; // dictionary to first term in searchWordTerm
-          let len = searchWordTerm.length;
-          let i = 1;
-          let done = false;
-          while (i < len && !done) {
-            let offset = seearhWordPos[i] - searchWordTerm[i - 1];
-            let word2 = []; // postDic[words]
-
-            word1 = fcoff(word1, word2, offset);
-
-            if (word1.length === 0) {
-              done = true;
-            }
-            i++;
-          }
-        }
-      }
-
-      docIDList = [];
-      postingList.forEach(p => {
-        docIDList.push(p.docID);
-      });
-
-      // console.log(docIDList);
-      Loc.find({ _id: { $in: docIDList } })
-        .then(n => {
-          n.forEach(item => {
-            locationList.push(item);
-          });
-
-          res.json(locationList);
-        })
-        .catch(err => res.status(404).json(err));
+  var rawResultData = getPosting(searchQueries);
+  rawResultData
+    .then(re => {
+      console.log(re);
+      // re.foreach(r => {
+      //   console.log(r);
+      // });
+      res.json(re);
     })
-    .catch(err => res.status(404).json(err));
+    .catch(error => {
+      console.log(error);
+    });
+  console.log("Finish");
 });
 
 module.exports = router;

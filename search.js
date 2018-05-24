@@ -16,7 +16,7 @@ function log10(val) {
 }
 
 
-var calculateRanking = (item) =>{
+var findRankingInfo = (item) =>{
   // post frequency
   // location total word count
   // dict frequency 
@@ -130,9 +130,17 @@ router.post("/", (req, res) => {
       let finalResult = [];
 
       re.forEach(item => {
+
+
+
         let myDocID = item.loc[0]._id;
         let myDocUrl = item.loc[0].url;
-        myLoc[myDocID] = myDocUrl;
+        let title = item.loc[0].title;
+        // creating a mapping with docID
+        let obj = new Object();
+        obj.title = title;
+        obj.url = myDocUrl;
+        myLoc[myDocID] = obj;
 
         // create dictionary to posting
         let myDict = {};
@@ -140,6 +148,7 @@ router.post("/", (req, res) => {
           myDict[item.post[i].wordID] = i;
         }
 
+        // this will check if mutiple word actually exist. Ex: computer science
         let myPost = item.post;
         let word1 = myPost[0].Position; // first term
 
@@ -158,11 +167,15 @@ router.post("/", (req, res) => {
           }
         }
 
-        let matchWord = word1.length;
 
-        let allTermRankInfo = calculateRanking(item);
+
+        let matchWord = word1.length; // num of term found
+
+        // this will find all the term and it's ranking info
+        let allTermRankInfo = findRankingInfo(item);
         let finalScore = 0;
-      
+        
+        // this will loop through all the term and ranking info. Then calculate them
         Object.keys( allTermRankInfo ).forEach( key => {
           let termRankInfo = allTermRankInfo[key];
           let tf = parseFloat(termRankInfo.postFreq / termRankInfo.locAllWord);
@@ -170,7 +183,7 @@ router.post("/", (req, res) => {
           finalScore +=  0.4 * (tf * idf) + (0.5) * termRankInfo.tagScore + 0.1 * matchWord; 
         });
 
-
+        // if the number of term found is greater than 0
         if (word1.length > 0) {
           highTier[myDocID] = finalScore;
         } else {
@@ -185,7 +198,6 @@ router.post("/", (req, res) => {
 
 
       // sort the object and look at the high tier list
-      
       let items = Object.keys(highTier).map(function(key) {
         return [key, highTier[key]];
       });
@@ -196,7 +208,7 @@ router.post("/", (req, res) => {
 
       finalResult.push(items.slice(0, 10));
 
-      // looking at the lower list
+      // looking at the lower list if we don't have enough
       if (finalResult.length < 10) {
         let numStillRequire = numOfResult - finalResult.length;
 
@@ -210,23 +222,34 @@ router.post("/", (req, res) => {
 
         finalResult.push(items.slice(0, numStillRequire));
       }
+      
+      let result = [];
 
-      console.log("High Tier");
       // loop through the high tier
       let arrayLength = finalResult[0].length;
       for (var i = 0; i < arrayLength; i++) {
         let docID = finalResult[0][i][0];
-        console.log(myLoc[docID] + " " + finalResult[0][i][1]);
+        //console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[0][i][1]);
+        let temp = {"_id":  docID, "title": myLoc[docID].title, "url": myLoc[docID].url};
+        result.push(temp);
+        
       }
 
-      console.log("Lower Tier");
       // loop through the low tier
       arrayLength = finalResult[1].length;
       for (var i = 0; i < arrayLength; i++) {
         let docID = finalResult[1][i][0];
-        console.log(myLoc[docID] + " " + finalResult[1][i][1]);
+         //console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[1][i][1]);
+        let temp = {"_id":  docID, "title": myLoc[docID].title, "url": myLoc[docID].url};
+        result.push(temp);
       }
-      
+
+      console.log(result);
+      res.json(result);
+
+
+
+
 
     })
     .catch(error => {

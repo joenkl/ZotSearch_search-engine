@@ -39,7 +39,8 @@ router.post("/", (req, res) => {
 
   });
 
-  var numOfSearchUniqueWord = new Set(searchWordTerm).length
+  var uniqueSearchWordSet = new Set(searchWordTerm);
+  var numOfSearchUniqueWord = uniqueSearchWordSet.size;
   var rawResultData = myPostDB.getPosting(searchWordTerm);
   rawResultData
     .then(re => {
@@ -57,10 +58,13 @@ router.post("/", (req, res) => {
         }
 
         let myDocID = createLocMapping.createLocMapping(myLocMapping, item);
-
         let numOfMatchWords = findAllMatchWords.findAllMatchWords(searchWordTerm, searchWordPos, numOfSearchUniqueWord,item).length;
         let termsRankInfo = findRankingInfo.findRankingInfo(item);
-
+        if(myDocID == "69/87"){
+          console.log(allSearchTermFound);
+          console.log(numOfMatchWords);
+          console.log(numOfSearchUniqueWord);
+        }
 
         let finalScore = calculateRankingScore.calculateRankingScore( termsRankInfo,numOfMatchWords,myLocMapping,myDocID, totalDocument);
         
@@ -102,7 +106,7 @@ router.post("/", (req, res) => {
             "finalScore": myLocMapping[docID].finalScore,
             "matchWords": myLocMapping[docID].totalWordFound,
             "tfidf": myLocMapping[docID].avgTFIDF,
-            "tagScore": myLocMapping[docID].avgTagScore
+            "tagScore": myLocMapping[docID].avgHighestTagScore
         };
         finalResult.push(temp);
         

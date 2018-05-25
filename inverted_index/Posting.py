@@ -30,19 +30,21 @@ class Posting(object):
             else:
                 termPosition = list()
                 termPosition.append(self.counter)
-                post = PostingModel('','', 1, 0, termPosition)
+                post = PostingModel('','', 1, 0,0, termPosition)
                 self.postDict[token] = post
 
         self.uniqueTerm = len(self.postDict)
     
     def addTagScore(self, wordsSet, tagScore):
         
-
-        
         for token in wordsSet:
             # only update the tagScore if it already exist in the system    
-            if token in self.postDict and self.postDict[token].tagScore < tagScore:
-                self.postDict[token].tagScore = tagScore
+            if token in self.postDict:
+                self.postDict[token].tagScore += tagScore
+
+                if self.postDict[token].highestTagScore < tagScore:
+                    self.postDict[token].highestTagScore = tagScore
+                
 
     '''
     def insertDataToDatabase(self, docID):
@@ -61,7 +63,7 @@ class Posting(object):
         bulk_update = []
         for key, value in self.postDict.items():
             bulk_update.append( InsertOne( 
-                    postingSchema( value.wordID, docID, value.frequency, value.tagScore, value.position)
+                    postingSchema( value.wordID, docID, value.frequency, value.tagScore, value.highestTagScore, value.position)
                     ))
                
         if len(bulk_update) > 0:

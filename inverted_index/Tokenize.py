@@ -6,7 +6,6 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import string
 from unidecode import unidecode
-import enchant
 
 
 #https://machinelearningmastery.com/clean-text-machine-learning-python/s
@@ -18,7 +17,6 @@ class Tokenize(object):
         self.text = text
         self.punctuationTable = str.maketrans('', '', string.punctuation)
         self.stopWords = set(stopwords.words('english'))
-        self.english = enchant.Dict("en_US")
         
 
 

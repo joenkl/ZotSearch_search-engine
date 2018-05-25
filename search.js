@@ -185,8 +185,8 @@ router.post("/", (req, res) => {
         Object.keys( allTermRankInfo ).forEach( key => {
           let termRankInfo = allTermRankInfo[key];
           let tf = parseFloat(termRankInfo.postFreq / termRankInfo.locAllWord);
-          let idf = log10( parseFloat(totalDocument / termRankInfo.dictFreq));
-
+          let idf = log10( parseFloat(totalDocument / termRankInfo.postFreq));
+          console.log(tf + " " + termRankInfo.dictFreq + " " + idf);
           avgTFIDF += 0.2 * (tf * idf);
           avgTagScore += 0.4 * termRankInfo.tagScore;
         });
@@ -248,7 +248,7 @@ router.post("/", (req, res) => {
       let arrayLength = finalResult[0].length;
       for (var i = 0; i < arrayLength; i++) {
         let docID = finalResult[0][i][0];
-        console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[0][i][1] + " " + myLoc[docID].totalWordFound + " "+ JSON.stringify(myLoc[docID].termInfo));
+        // console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[0][i][1] + " " + myLoc[docID].totalWordFound + " "+ JSON.stringify(myLoc[docID].termInfo));
         let temp = {"_id":  docID, 
             "title": myLoc[docID].title,
             "url": myLoc[docID].url, 
@@ -265,7 +265,7 @@ router.post("/", (req, res) => {
       arrayLength = finalResult[1].length;
       for (var i = 0; i < arrayLength; i++) {
         let docID = finalResult[1][i][0];
-        console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[1][i][1] + " " + myLoc[docID].totalWordFound + " " + JSON.stringify(myLoc[docID].termInfo));
+        // console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[1][i][1] + " " + myLoc[docID].totalWordFound + " " + JSON.stringify(myLoc[docID].termInfo));
         let temp = {"_id":  docID, 
                   "title": myLoc[docID].title,
                   "url": myLoc[docID].url, 

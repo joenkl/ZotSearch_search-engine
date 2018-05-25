@@ -49,13 +49,13 @@ class Dictionary(object):
             if key in self.wordsDict:
                 self.wordsDict[key].frequency += value.frequency
             else:
-                self.updateDictionary(key, key, value.frequency)
+                self.updateDictionary(key, key, value.frequency, 0)
             
 
 
 
-    def updateDictionary(self, id, word, frequency):
-        dic = DictionaryModel(id, word, frequency)
+    def updateDictionary(self, id, word, frequency, numDocPerToken):
+        dic = DictionaryModel(id, word, frequency, numDocPerToken)
         self.wordsDict[id] = dic
 
     def updateWordID(self, word, id):
@@ -73,9 +73,11 @@ class Dictionary(object):
 
             if document:
                 f = document['frequency']
-                bulk_update.append( UpdateOne( findWord(key), setFrequency(f + value.frequency)))
+                numDoc = document['numDocPerToken']
+                bulk_update.append( UpdateOne( findWord(key), setFrequency(f + value.frequency, numDoc + 1)))
+
             else:
-                bulk_update.append( InsertOne( insertDict(key, value.frequency)))
+                bulk_update.append( InsertOne( insertDict(key, value.frequency, 1)))
 
         
         if len(bulk_update) > 0:

@@ -18,3 +18,8 @@
 ul {
   list-style-type: none;
 }
+.link-score {
+  font-style: italic;
+  color: #607d8b;
+  font-size: 90%;
+}

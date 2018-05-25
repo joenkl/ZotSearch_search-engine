@@ -18,93 +18,7 @@ const stemmer = natural.PorterStemmer;
 const totalDocument = 37497;
 const numOfResults = 10;
 
-function log10(val) {
-  return Math.log(val) / Math.log(10);
-}
 
-var findRankingInfo = item => {
-  // post frequency
-  // location total word count
-  // dict frequency
-  let result = {};
-
-  const myPosting = item.post;
-  // loop through post to find posting frequency
-  myPosting.forEach(post => {
-    let rankInfo = new Object();
-    rankInfo.postFreq = post.frequency;
-    rankInfo.tagScore = post.tagScore;
-    result[post.wordID] = rankInfo;
-  });
-
-  // loop through dictinoary and find posting frequency
-  const myDict = item.dict;
-  myDict.forEach(dict => {
-    let rankInfo = result[dict._id];
-    rankInfo.dictFreq = dict.frequency;
-  });
-
-  const locationFreq = item.loc[0].totalWordCount;
-  Object.keys(result).forEach(key => {
-    result[key].locAllWord = locationFreq;
-  });
-
-  return result;
-};
-
-var fcoffset = (word1, word2, offset) => {
-  let word = [];
-  let i = 0;
-  let j = 0;
-  while (i < word1.length && j < word2.length) {
-    if (word1[i] >= word2[j]) {
-      j++;
-    } else {
-      if (word1[i] + offset >= word2[j]) {
-        word.push(word2[j]);
-        j++;
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return word;
-};
-
-function getPosting(searchQueries) {
-  return Posting.aggregate([
-    { $match: { wordID: { $in: searchQueries } } },
-    {
-      $group: {
-        _id: "$docID",
-        post: { $push: "$$ROOT" },
-        count: { $sum: 1 },
-        countSumFre: { $sum: "$frequency" }
-      }
-    },
-    {
-      $sort: { count: -1, countSumFre: -1 }
-    },
-    { $limit: 1000 },
-    {
-      $lookup: {
-        from: "Location",
-        localField: "post.docID",
-        foreignField: "_id",
-        as: "loc"
-      }
-    },
-    {
-      $lookup: {
-        from: "Dictionary",
-        localField: "post.wordID",
-        foreignField: "_id",
-        as: "dict"
-      }
-    }
-  ]);
-}
 
 router.post("/", (req, res) => {
   const errors = {};
@@ -122,6 +36,7 @@ router.post("/", (req, res) => {
       searchWordTerm.push(stemmer.stem(term));
       searchWordPos.push(i);
     }
+
   });
 
   var uniqueSearchWordSet = new Set(searchWordTerm);
@@ -129,24 +44,17 @@ router.post("/", (req, res) => {
   var rawResultData = myPostDB.getPosting(searchWordTerm);
   rawResultData
     .then(re => {
-      let myLoc = {};
+
+
+      let myLocMapping = {};
       let highTier = {};
       let lowerTier = {};
 
       re.forEach(item => {
-        let myDocID = item.loc[0]._id;
-        let myDocUrl = item.loc[0].url;
-        let title = item.loc[0].title;
-        // creating a mapping with docID
-        let obj = new Object();
-        obj.title = title;
-        obj.url = myDocUrl;
-        myLoc[myDocID] = obj;
+        let allSearchTermFound = false; 
 
-        // create dictionary to posting
-        let myDict = {};
-        for (let i = 0; i < item.post.length; i++) {
-          myDict[item.post[i].wordID] = i;
+        if(item.post.length == numOfSearchUniqueWord){
+            allSearchTermFound = true;
         }
 
         let myDocID = createLocMapping.createLocMapping(myLocMapping, item);
@@ -161,36 +69,19 @@ router.post("/", (req, res) => {
         let finalScore = calculateRankingScore.calculateRankingScore( termsRankInfo,numOfMatchWords,myLocMapping,myDocID, totalDocument);
         
 
-        let numOfSearchTerm = Object.keys(allTermRankInfo).length;
-        // this will loop through all the term and ranking info. Then calculate them
-        Object.keys(allTermRankInfo).forEach(key => {
-          let termRankInfo = allTermRankInfo[key];
-          let tf = parseFloat(termRankInfo.postFreq / termRankInfo.locAllWord);
-          let idf = log10(parseFloat(totalDocument / termRankInfo.dictFreq));
 
-          avgTFIDF += 0.2 * (tf * idf);
-          avgTagScore += 0.4 * termRankInfo.tagScore;
-        });
-
-        avgTFIDF /= numOfSearchTerm;
-        avgTagScore /= numOfSearchTerm;
-
-        finalScore = avgTFIDF + avgTagScore + matchWord * 0.4;
-
-        myLoc[myDocID].termInfo = allTermRankInfo;
-        myLoc[myDocID].totalWordFound = matchWord;
-        myLoc[myDocID].finalScore = finalScore;
-        myLoc[myDocID].avgTagScore = avgTagScore;
-        myLoc[myDocID].avgTFIDF = avgTFIDF;
-
-        // if the number of term found is greater than 0
-        if (word1.length > 0 && myPost.length > 1) {
+        
+        if (numOfMatchWords > 0 && allSearchTermFound) {
           highTier[myDocID] = finalScore;
         } else {
           lowerTier[myDocID] = finalScore;
         }
+
       });
 
+
+
+      let finalTier = [];
       // sort the object and look at the high tier list
       finalTier = sortDictionary.sortDictionary(numOfResults, highTier);
 
@@ -201,8 +92,8 @@ router.post("/", (req, res) => {
 
         finalTier.push(...sortDictionary.sortDictionary(numOfResults + 1, lowerTier));
       }
+      
 
-      let result = [];
 
       let finalResult = [];
       let finalTierLength = finalTier.length;
@@ -217,27 +108,12 @@ router.post("/", (req, res) => {
             "tfidf": myLocMapping[docID].avgTFIDF,
             "tagScore": myLocMapping[docID].avgHighestTagScore
         };
-        result.push(temp);
+        finalResult.push(temp);
+        
       }
 
-      // loop through the low tier
-      arrayLength = finalResult[1].length;
-      for (var i = 0; i < arrayLength; i++) {
-        let docID = finalResult[1][i][0];
-        // console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[1][i][1] + " " + myLoc[docID].totalWordFound + " " + JSON.stringify(myLoc[docID].termInfo));
-        let temp = {
-          _id: docID,
-          title: myLoc[docID].title,
-          url: myLoc[docID].url,
-          finalScore: myLoc[docID].finalScore,
-          matchWords: myLoc[docID].totalWordFound,
-          tfidf: myLoc[docID].avgTFIDF,
-          tagScore: myLoc[docID].avgTagScore
-        };
-        result.push(temp);
-      }
+      res.json(finalResult);
 
-      res.json(result);
     })
     .catch(error => {
       console.log(error);

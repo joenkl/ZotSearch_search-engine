@@ -6,9 +6,17 @@ const Loc = require("./models/Location");
 const natural = require("natural");
 const tokenizer = new natural.WordTokenizer();
 const stopwords = require("./lib/stopwords");
+const myPostDB = require("./lib/getPosting");
+const createLocMapping = require("./lib/createLocMapping");
+const findAllMatchWords= require("./lib/findAllMatchWords");
+const findRankingInfo = require("./lib/findRankingInfo");
+const calculateRankingScore = require("./lib/calculateRankingScore");
+const sortDictionary = require("./lib/sortDictionary");
+
 const stemmer = natural.PorterStemmer;
-const numOfResult = 10;
+
 const totalDocument = 37497;
+const numOfResults = 10;
 
 function log10(val) {
   return Math.log(val) / Math.log(10);
@@ -112,7 +120,6 @@ router.post("/", (req, res) => {
     let term = item.trim();
     if (!stopwords.has(term) && term.length > 2) {
       searchWordTerm.push(stemmer.stem(term));
-      //searchWordTerm.push(term);
       searchWordPos.push(i);
     }
   });
@@ -122,7 +129,6 @@ router.post("/", (req, res) => {
       let myLoc = {};
       let highTier = {};
       let lowerTier = {};
-      let finalResult = [];
 
       re.forEach(item => {
         let myDocID = item.loc[0]._id;
@@ -140,24 +146,10 @@ router.post("/", (req, res) => {
           myDict[item.post[i].wordID] = i;
         }
 
-        // this will check if mutiple word actually exist. Ex: computer science
-        let myPost = item.post;
-        let word1 = myPost[0].Position; // first term
+        let myDocID = createLocMapping.createLocMapping(myLocMapping, item);
 
-        if (myPost.length > 1) {
-          let len = searchWordTerm.length;
-          let i = 1;
-          let done = false;
-          while (i < len && !done) {
-            let offset = searchWordPos[i] - searchWordPos[i - 1];
-            let word2 = myPost[myDict[searchWordTerm[i]]].Position;
-            word1 = fcoffset(word1, word2, offset);
-            if (word1.length === 0) {
-              done = true;
-            }
-            i++;
-          }
-        }
+        let numOfMatchWords = findAllMatchWords.findAllMatchWords(searchWordTerm, searchWordPos, numOfSearchUniqueWord,item).length;
+        let termsRankInfo = findRankingInfo.findRankingInfo(item);
 
         let matchWord = word1.length; // num of term found
 
@@ -198,29 +190,14 @@ router.post("/", (req, res) => {
       });
 
       // sort the object and look at the high tier list
-      let items = Object.keys(highTier).map(function(key) {
-        return [key, highTier[key]];
-      });
+      finalTier = sortDictionary.sortDictionary(numOfResults, highTier);
 
-      items.sort(function(first, second) {
-        return second[1] - first[1];
-      });
-
-      finalResult.push(items.slice(0, 10));
 
       // looking at the lower list if we don't have enough
-      if (finalResult.length < 10) {
-        let numStillRequire = numOfResult - finalResult.length;
+      if (finalTier.length < numOfResults) {
+        let numStillRequire = numOfResults - finalTier.length;
 
-        items = Object.keys(lowerTier).map(function(key) {
-          return [key, lowerTier[key]];
-        });
-
-        items.sort(function(first, second) {
-          return second[1] - first[1];
-        });
-
-        finalResult.push(items.slice(0, numStillRequire + 1));
+        finalTier.push(...sortDictionary.sortDictionary(numOfResults + 1, lowerTier));
       }
 
       let result = [];

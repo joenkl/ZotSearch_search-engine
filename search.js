@@ -16,7 +16,7 @@ const sortDictionary = require("./lib/sortDictionary");
 const stemmer = natural.PorterStemmer;
 
 const totalDocument = 37497;
-const numOfResults = 10;
+const numOfResults = 20;
 
 
 
@@ -60,11 +60,7 @@ router.post("/", (req, res) => {
         let myDocID = createLocMapping.createLocMapping(myLocMapping, item);
         let numOfMatchWords = findAllMatchWords.findAllMatchWords(searchWordTerm, searchWordPos, numOfSearchUniqueWord,item).length;
         let termsRankInfo = findRankingInfo.findRankingInfo(item);
-        if(myDocID == "69/87"){
-          console.log(allSearchTermFound);
-          console.log(numOfMatchWords);
-          console.log(numOfSearchUniqueWord);
-        }
+
 
         let finalScore = calculateRankingScore.calculateRankingScore( termsRankInfo,numOfMatchWords,myLocMapping,myDocID, totalDocument);
         

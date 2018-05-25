@@ -22,7 +22,7 @@ def postingSchema(wordID,  docID,  frequency, tagScore, highestTagScore, positio
                 "wordID" : wordID,
                 "docID" : docID,
                 "frequency" : frequency,
-                "tagScore" : tagScore,
+                "totalTagScore" : tagScore,
                 "highestTagScore": highestTagScore,
                 "Position": position
             }

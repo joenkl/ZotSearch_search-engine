@@ -205,7 +205,7 @@ router.post("/", (req, res) => {
 
 
         // if the number of term found is greater than 0
-        if (word1.length > 0) {
+        if (word1.length > 0 && myPost.length > 1) {
           highTier[myDocID] = finalScore;
         } else {
           lowerTier[myDocID] = finalScore;

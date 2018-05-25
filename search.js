@@ -116,7 +116,6 @@ router.post("/", (req, res) => {
       searchWordPos.push(i);
     }
   });
-
   var rawResultData = getPosting(searchWordTerm);
   rawResultData
     .then(re => {
@@ -191,7 +190,7 @@ router.post("/", (req, res) => {
         myLoc[myDocID].avgTFIDF = avgTFIDF;
 
         // if the number of term found is greater than 0
-        if (word1.length > 0) {
+        if (word1.length > 0 && myPost.length > 1) {
           highTier[myDocID] = finalScore;
         } else {
           lowerTier[myDocID] = finalScore;

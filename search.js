@@ -123,7 +123,10 @@ router.post("/", (req, res) => {
       searchWordPos.push(i);
     }
   });
-  var rawResultData = getPosting(searchWordTerm);
+
+  var uniqueSearchWordSet = new Set(searchWordTerm);
+  var numOfSearchUniqueWord = uniqueSearchWordSet.size;
+  var rawResultData = myPostDB.getPosting(searchWordTerm);
   rawResultData
     .then(re => {
       let myLoc = {};
@@ -147,17 +150,16 @@ router.post("/", (req, res) => {
         }
 
         let myDocID = createLocMapping.createLocMapping(myLocMapping, item);
-
         let numOfMatchWords = findAllMatchWords.findAllMatchWords(searchWordTerm, searchWordPos, numOfSearchUniqueWord,item).length;
         let termsRankInfo = findRankingInfo.findRankingInfo(item);
+        if(myDocID == "69/87"){
+          console.log(allSearchTermFound);
+          console.log(numOfMatchWords);
+          console.log(numOfSearchUniqueWord);
+        }
 
-        let matchWord = word1.length; // num of term found
-
-        // this will find all the term and it's ranking info
-        let allTermRankInfo = findRankingInfo(item);
-        let finalScore = 0;
-        let avgTFIDF = 0;
-        let avgTagScore = 0;
+        let finalScore = calculateRankingScore.calculateRankingScore( termsRankInfo,numOfMatchWords,myLocMapping,myDocID, totalDocument);
+        
 
         let numOfSearchTerm = Object.keys(allTermRankInfo).length;
         // this will loop through all the term and ranking info. Then calculate them
@@ -202,19 +204,18 @@ router.post("/", (req, res) => {
 
       let result = [];
 
-      // loop through the high tier
-      let arrayLength = finalResult[0].length;
-      for (var i = 0; i < arrayLength; i++) {
-        let docID = finalResult[0][i][0];
-        // console.log(myLoc[docID].title + " : " +  myLoc[docID].url + " " + finalResult[0][i][1] + " " + myLoc[docID].totalWordFound + " "+ JSON.stringify(myLoc[docID].termInfo));
-        let temp = {
-          _id: docID,
-          title: myLoc[docID].title,
-          url: myLoc[docID].url,
-          finalScore: myLoc[docID].finalScore,
-          matchWords: myLoc[docID].totalWordFound,
-          tfidf: myLoc[docID].avgTFIDF,
-          tagScore: myLoc[docID].avgTagScore
+      let finalResult = [];
+      let finalTierLength = finalTier.length;
+      for (var i = 0; i < finalTierLength; i++) {
+        let docID = finalTier[i][0];
+        
+        let temp = {"_id":  docID, 
+            "title": myLocMapping[docID].title,
+            "url": myLocMapping[docID].url, 
+            "finalScore": myLocMapping[docID].finalScore,
+            "matchWords": myLocMapping[docID].totalWordFound,
+            "tfidf": myLocMapping[docID].avgTFIDF,
+            "tagScore": myLocMapping[docID].avgHighestTagScore
         };
         result.push(temp);
       }

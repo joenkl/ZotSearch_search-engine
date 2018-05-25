@@ -37,7 +37,7 @@ export default class SearchResult extends Component {
                     </li>
                     <li className="link-score">
                       Final Score: {item.finalScore.toFixed(2)}, Found:{" "}
-                      {item.matchWords} words, TF-IDF: {item.tfidf.toFixed(2)},
+                      {item.matchWords} words, TF-IDF: {item.tfidf.toFixed(5)},
                       Tag Score {item.tagScore.toFixed(2)}
                     </li>
                     <li>

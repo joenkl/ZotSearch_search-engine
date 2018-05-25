@@ -52,17 +52,17 @@ router.post("/", (req, res) => {
 
       re.forEach(item => {
         let allSearchTermFound = false; 
-
+        let countSumFre = item.countSumFre;
         if(item.post.length == numOfSearchUniqueWord){
             allSearchTermFound = true;
         }
 
         let myDocID = createLocMapping.createLocMapping(myLocMapping, item);
-        let numOfMatchWords = findAllMatchWords.findAllMatchWords(searchWordTerm, searchWordPos, numOfSearchUniqueWord,item).length;
+        let numOfMatchWords = findAllMatchWords.findAllMatchWords(searchWordTerm, searchWordPos, allSearchTermFound,item).length;
         let termsRankInfo = findRankingInfo.findRankingInfo(item);
 
 
-        let finalScore = calculateRankingScore.calculateRankingScore( termsRankInfo,numOfMatchWords,myLocMapping,myDocID, totalDocument);
+        let finalScore = calculateRankingScore.calculateRankingScore( termsRankInfo,numOfMatchWords,myLocMapping,myDocID, totalDocument, countSumFre);
         
 
 

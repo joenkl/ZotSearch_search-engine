@@ -12,7 +12,7 @@ export default class SearchResult extends Component {
             Result for <strong>"{this.props.location.state.searchWord}"</strong>:
           </h3>
           <div className="container-fluid">
-            {this.props.location.state.size < 30 ? (
+            {this.props.location.state.size < 20 ? (
               <p>
                 There are {this.props.location.state.size} results found in{" "}
                 {timeSpentSec}s
@@ -36,9 +36,9 @@ export default class SearchResult extends Component {
                       )}
                     </li>
                     <li className="link-score">
-                      Final Score: {item.finalScore.toFixed(2)}, Found:{" "}
-                      {item.matchWords} words, TF-IDF: {item.tfidf.toFixed(5)},
-                      Tag Score {item.tagScore.toFixed(2)}
+                      Final Score: {item.finalScore.toFixed(3)}, Matching score:{" "}
+                      {item.matchWords.toFixed(3)}, TF-IDF: {item.tfidf.toFixed(5)},
+                      Tag Score {item.highestTagScore.toFixed(3)}
                     </li>
                     <li>
                       <a

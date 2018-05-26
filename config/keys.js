@@ -3,5 +3,5 @@ module.exports = {
 };
 
 // module.exports = {
-//   mongoURI: "mongodb://localhost:27017/cs121_stem"
+//   mongoURI: "mongodb://localhost:27017/icssearch"
 // };

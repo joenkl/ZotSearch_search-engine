@@ -100,9 +100,10 @@ router.post("/", (req, res) => {
             "title": myLocMapping[docID].title,
             "url": myLocMapping[docID].url, 
             "finalScore": myLocMapping[docID].finalScore,
-            "matchWords": myLocMapping[docID].totalWordFound,
-            "tfidf": myLocMapping[docID].avgTFIDF,
-            "tagScore": myLocMapping[docID].avgHighestTagScore
+            "matchWords": myLocMapping[docID].normNumOfMatchWords,
+            "tfidf": myLocMapping[docID].totalTFIDF,
+            "highestTagScore": myLocMapping[docID].normHighestTagScore,
+            "totalTagScore": myLocMapping[docID].normTotalTagScore
         };
         finalResult.push(temp);
         

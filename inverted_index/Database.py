@@ -13,7 +13,7 @@ db.authenticate('jnguyen', 'demonjos')
 
 
 client = MongoClient('localhost', 27017)
-db = client.cs121Test
+db = client.icssearch
 
 
 

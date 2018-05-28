@@ -86,7 +86,7 @@ router.post("/", (req, res) => {
       if (finalTier.length < numOfResults) {
         let numStillRequire = numOfResults - finalTier.length;
 
-        finalTier.push(...sortDictionary.sortDictionary(numOfResults + 1, lowerTier));
+        finalTier.push(...sortDictionary.sortDictionary(numStillRequire, lowerTier));
       }
       
 
